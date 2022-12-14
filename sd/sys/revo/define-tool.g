@@ -1,6 +1,9 @@
 ; verify parameters
 if !exists(param.S)
   abort "Missing S parameter (nozzle diameter)"
+  
+; check if the tool must be selected again after redefinition
+var selectTool = state.currentTool == 0
 
 ; recreate T0
 if mod(param.S, 0.1) == 0
@@ -16,3 +19,8 @@ set global.nozzleDiameter = param.S
 ; make this configuration persistent unless it's being restored on start (R parameter)
 if !exists(param.R)
   echo >"revo/restore-tool.g" "M98 P""revo/define-tool.g"" S" ^ param.S ^ " R1"
+  
+; select it again if necessary
+if var.selectTool
+  T0
+  M703

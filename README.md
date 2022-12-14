@@ -41,11 +41,6 @@ Changes are saved permantently on the SD card for your convenience and the last 
 In order to fine-tune filament instances, you can reference `global.nozzleDiameter` in your filament configuration macros to set up the right PA and firmware retraction parameters.
 
 
-### Caveats
-
-This script set assumes you do not have a filament loaded at the time you actually change the nozzle insert.
-If you rely on filament configuration macros and change the nozzle insert while it's still loaded, you may need to rerun `M703` yourself.
-
 ## Demo configuration for custom filaments
 
 Here my demo configuration for a PETG filament definition that uses different PA and firmware retraction values for the 0.4 and 0.8mm nozzles.
