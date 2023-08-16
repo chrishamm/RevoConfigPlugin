@@ -1,0 +1,2 @@
+*.g linguist-language=G-code
+*.gcode linguist-language=G-code
