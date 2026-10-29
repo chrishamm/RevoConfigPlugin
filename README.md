@@ -27,6 +27,9 @@ This will restore the last configured Revo insert on the next restart of the fir
 
 Upon installation, you can see a new `Revo` directory in the `Macros` list which contains the following items:
 
+- High Flow (0.4mm to 1.4mm)
+- ObXidian (0.25mm to 0.8mm)
+- ObXidian High Flow (0.4mm to 1.4mm)
 - 0.15mm Nozzle (Pink)
 - 0.25mm Nozzle (Yellow)
 - 0.4mm Nozzle (Red)
@@ -35,10 +38,21 @@ Upon installation, you can see a new `Revo` directory in the `Macros` list which
 
 Using these macros you can reconfigure your Revo hotend whenever you've changed the nozzle insert.
 Changes are saved permantently on the SD card for your convenience and the last configuration is restored on reboot.
+The plain brass inserts sit at the top level and each of the other product lines has its own sub-directory.
 
-### Global variable nozzleDiameter
+The configured insert is reflected in the tool name, so DWC shows e.g. `Revo ObXidian HF Nozzle 0.6mm` for the 0.6mm ObXidian High Flow insert.
 
-In order to fine-tune filament instances, you can reference `global.nozzleDiameter` in your filament configuration macros to set up the right PA and firmware retraction parameters.
+### Global variables
+
+In order to fine-tune filament instances, you can reference these globals in your filament configuration macros to set up the right PA, firmware retraction and volumetric limits:
+
+| Variable | Type | Description |
+| -------- | ---- | ----------- |
+| `global.nozzleDiameter` | float | Diameter of the configured insert in mm |
+| `global.nozzleHighFlow` | bool | Whether a high flow insert is configured |
+| `global.nozzleHardened` | bool | Whether a hardened ObXidian insert is configured |
+
+The two flags are independent, because an ObXidian insert may be a high flow one as well.
 
 
 ## Demo configuration for custom filaments
@@ -143,3 +157,16 @@ M98 P"revo/check-nozzle.g" S0.6
 
 If either the loaded filament type or the nozzle widths (0.6mm in this case) don't match, the print is aborted immediately.
 In the case of the previously mentioned PETG filament, make sure to set `Filament type` in the slicer to `PETG`.
+
+`check-nozzle.g` accepts two more optional parameters to verify the insert type as well, `H1` for a high flow insert and `O1` for a hardened ObXidian one:
+
+```
+M98 P"revo/check-nozzle.g" S0.6 H1 O0
+```
+
+Both are only checked when they are present, so existing job files that pass `S` alone keep working.
+PrusaSlicer 2.9 and newer can derive the high flow flag from the printer profile:
+
+```
+M98 P"revo/check-nozzle.g" S[nozzle_diameter] H{if nozzle_high_flow}1{else}0{endif}
+```
